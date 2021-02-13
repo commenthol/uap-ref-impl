@@ -7,6 +7,9 @@ const regexes = {
   user_agent_parsers: [
     { regex: '(Firefox)/(\\d+)(?:\\.(\\d+)|)' }
   ],
+  engine_parsers: [
+    { regex: '(Gecko)/20\\d{6}' }
+  ],
   os_parsers: [
     { regex: '(Windows NT) (\\d+)(?:\\.(\\d+)|)' }
   ],
@@ -23,7 +26,7 @@ describe('parse function', function () {
     const parse = parser(regexes).parse
     const result = parse(USER_AGENT_STRING)
     assert.deepStrictEqual(
-      result, {
+      JSON.parse(JSON.stringify(result)), {
         userAgent: 'Mozilla/5.0 (Windows NT 6.1; rv:2.0b6pre) Gecko/20100903 Firefox/4.0b6pre Firefox/4.0b6pre',
         ua: {
           family: 'Firefox',
@@ -31,15 +34,24 @@ describe('parse function', function () {
           minor: '0',
           patch: null
         },
-        os:
-         {
-           family: 'Windows NT',
-           major: '6',
-           minor: '1',
-           patch: null,
-           patchMinor: null
-         },
-        device: { family: 'Desktop', brand: null, model: null }
+        engine: {
+          family: 'Gecko',
+          major: null,
+          minor: null,
+          patch: null
+        },
+        os: {
+          family: 'Windows NT',
+          major: '6',
+          minor: '1',
+          patch: null,
+          patchMinor: null
+        },
+        device: {
+          family: 'Desktop',
+          brand: null,
+          model: null
+        }
       }
     )
   })
